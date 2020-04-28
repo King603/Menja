@@ -40,7 +40,7 @@ function makeRecursiveCubeModel({ recursionLevel, splitFn, color, scale = 1 }) {
   }
   let finalModel = { vertices: [], polys: [] };
   // 生成单个立方体模型并缩放它。
-  let cubeModel = makeCubeModel();
+  let cubeModel = makeCubeModel({ scale: 1 });
   cubeModel.vertices.forEach(scaleVector(getScaleAtLevel(recursionLevel)));
   // 计算x、y或z的最大距离。
   // 与`Math.max(...cubeOrigins.map(o => o.x))"相同的结果，但快得多。

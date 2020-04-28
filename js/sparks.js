@@ -1,7 +1,7 @@
-const sparks = [];
-const sparkPool = [];
+let sparks = [];
+let sparkPool = [];
 function addSpark(x, y, xD, yD) {
-  const spark = sparkPool.pop() || {};
+  let spark = sparkPool.pop() || {};
   spark.x = x + xD * .5;
   spark.y = y + yD * .5;
   spark.xD = xD;
@@ -13,10 +13,10 @@ function addSpark(x, y, xD, yD) {
 }
 // 球形火花破裂
 function sparkBurst(x, y, count, maxSpeed) {
-  const angleInc = TAU / count;
+  let angleInc = TAU / count;
   for (let i = 0; i < count; i++) {
-    const angle = i * angleInc + angleInc * Math.random();
-    const speed = (1 - Math.random() ** 3) * maxSpeed;
+    let angle = i * angleInc + angleInc * Math.random();
+    let speed = (1 - Math.random() ** 3) * maxSpeed;
     addSpark(x, y, Math.sin(angle) * speed, Math.cos(angle) * speed);
   }
 }
@@ -30,10 +30,10 @@ function glueShedSparks(target) {
   else {
     copyVerticesTo(target.vertices, glueShedVertices);
   }
-  glueShedVertices.forEach(v => {
+  glueShedVertices.forEach(vertice => {
     if (Math.random() < .4) {
-      projectVertex(v);
-      addSpark(v.x, v.y, random(-12, 12), random(-12, 12));
+      projectVertex(vertice);
+      addSpark(vertice.x, vertice.y, random(-12, 12), random(-12, 12));
     }
   });
 }

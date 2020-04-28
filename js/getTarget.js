@@ -1,31 +1,31 @@
 // 所有活动目标
-const targets = [];
+let targets = [];
 /**
  * 使用映射按颜色池目标实例。
  * 键是颜色对象，值是目标数组。
  * 另外，还单独地池线框实例。
  */
-const targetPool = new Map(allColors.map(c => [c, []]));
-const targetWireframePool = new Map(allColors.map(c => [c, []]));
-const getTarget = (() => {
-  const slowmoSpawner = makeSpawner({
+let targetPool = new Map(allColors.map(c => [c, []]));
+let targetWireframePool = new Map(allColors.map(c => [c, []]));
+let getTarget = (() => {
+  let slowmoSpawner = makeSpawner({
     chance: 0.5,
     cooldownPerSpawn: 10000,
     maxSpawns: 1
   });
   let doubleStrong = false;
-  const strongSpawner = makeSpawner({
+  let strongSpawner = makeSpawner({
     chance: 0.3,
     cooldownPerSpawn: 12000,
     maxSpawns: 1
   });
-  const spinnerSpawner = makeSpawner({
+  let spinnerSpawner = makeSpawner({
     chance: 0.1,
     cooldownPerSpawn: 10000,
     maxSpawns: 1
   });
   // 缓存的数组实例，不需要每次分配。
-  const axisOptions = [["x", "y"], ["y", "z"], ["z", "x"]];
+  let axisOptions = [["x", "y"], ["y", "z"], ["z", "x"]];
   function getTargetOfStyle(color, wireframe) {
     let target = (wireframe ? targetWireframePool : targetPool).get(color).pop();
     if (!target) {
@@ -64,7 +64,7 @@ const getTarget = (() => {
     let wireframe = false;
     let health = 1;
     let maxHealth = 3;
-    const spinner = state.game.cubeCount >= spinnerThreshold && isInGame() && spinnerSpawner.shouldSpawn();
+    let spinner = state.game.cubeCount >= spinnerThreshold && isInGame() && spinnerSpawner.shouldSpawn();
     // 目标参数覆盖
     if (state.game.cubeCount >= slowmoThreshold && slowmoSpawner.shouldSpawn()) {
       color = BLUE;
@@ -74,14 +74,14 @@ const getTarget = (() => {
       health = 3;
     }
     // 目标创建
-    const target = getTargetOfStyle(color, wireframe);
+    let target = getTargetOfStyle(color, wireframe);
     target.hit = false;
     target.maxHealth = maxHealth;
     target.health = health;
     updateTargetHealth(target, 0);
-    const spinSpeeds = [
-      Math.random() * 0.1 - 0.05,
-      Math.random() * 0.1 - 0.05
+    let spinSpeeds = [
+      Math.random() * .1 - .05,
+      Math.random() * .1 - .05
     ];
     if (spinner) {
       // 最终会绕着一个随机的轴旋转
@@ -108,7 +108,7 @@ function updateTargetHealth(target, healthDelta) {
     poly.strokeColor = makeTargetGlueColor(target);
   });
 };
-const returnTarget = target => {
+function returnTarget(target) {
   target.reset();
   (target.wireframe ? targetWireframePool : targetPool).get(target.color).push(target);
 };

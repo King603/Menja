@@ -3,7 +3,7 @@ const frags = [];
 // 使用地图，按颜色将不活动的片段池起来。
 // keys是color对象，值是片段数组。
 // 另外，还单独地池线框实例。
-const fragPool = new Map(allColors.map(c =>[c, []]));
+const fragPool = new Map(allColors.map(c => [c, []]));
 const fragWireframePool = new Map(allColors.map(c => [c, []]));
 const createBurst = (() => {
   // 预先计算一些私有数据以供所有突发事件重用。
@@ -70,7 +70,5 @@ const createBurst = (() => {
 })();
 const returnFrag = frag => {
   frag.reset();
-  const pool = frag.wireframe ? fragWireframePool : fragPool;
-  pool.get(frag.color).push(frag);
+  (frag.wireframe ? fragWireframePool : fragPool).get(frag.color).push(frag);
 };
-
