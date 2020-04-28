@@ -5,15 +5,15 @@ function makeCubeModel({ scale = 1 }) {
   return {
     vertices: [
       // 上
-      { x: -scale, y: -scale, z: +scale },
-      { x: +scale, y: -scale, z: +scale },
-      { x: +scale, y: +scale, z: +scale },
-      { x: -scale, y: +scale, z: +scale },
+      { x: -scale, y: -scale, z: scale },
+      { x: scale, y: -scale, z: scale },
+      { x: scale, y: scale, z: scale },
+      { x: -scale, y: scale, z: scale },
       // 下
       { x: -scale, y: -scale, z: -scale },
-      { x: +scale, y: -scale, z: -scale },
-      { x: +scale, y: +scale, z: -scale },
-      { x: -scale, y: +scale, z: -scale },
+      { x: scale, y: -scale, z: -scale },
+      { x: scale, y: scale, z: -scale },
+      { x: -scale, y: scale, z: -scale },
     ],
     polys: [
       { vIndexes: [0, 1, 2, 3] }, // z = 1
