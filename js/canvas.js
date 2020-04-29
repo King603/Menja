@@ -1,13 +1,13 @@
 function setupCanvases() {
-  const ctx = canvas.getContext("2d");
+  let ctx = canvas.getContext("2d");
   // 设备像素比例别名
-  const dpr = window.devicePixelRatio || 1;
+  let dpr = window.devicePixelRatio || 1;
   // 视图将被缩放，以便对象在所有屏幕尺寸上显示大小相同。
   let viewScale;
   // 尺寸(考虑到视图规模!)
   let width, height;
   function handleResize() {
-    const { innerWidth: w, innerHeight: h } = window;
+    let { innerWidth: w, innerHeight: h } = window;
     viewScale = h / 1000;
     width = w / viewScale;
     height = h / viewScale;
@@ -35,25 +35,25 @@ function setupCanvases() {
       if (frameTime < 0)
         frameTime = 17;
       // - 15fps[~68ms]的最小帧率上限(假设60fps[~17ms]为“正常”)
-      else 
+      else
         frameTime = Math.min(frameTime, 68);
-      const halfW = width / 2;
-      const halfH = height / 2;
+      let half = {
+        w: width / 2,
+        h: height / 2
+      };
       // 将指针位置从屏幕转换为场景坐标。
-      pointerScene.x = pointerScreen.x / viewScale - halfW;
-      pointerScene.y = pointerScreen.y / viewScale - halfH;
-      const lag = frameTime / 16.6667;
-      const simTime = gameSpeed * frameTime;
-      const simSpeed = gameSpeed * lag;
-      tick(width, height, simTime, simSpeed, lag);
+      pointer.scene.x = pointer.screen.x / viewScale - half.w;
+      pointer.scene.y = pointer.screen.y / viewScale - half.h;
+      let lag = frameTime / 16.6667;
+      tick(width, height, gameSpeed * frameTime, gameSpeed * lag, lag);
       // 自动清除画布
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       // 自动缩放绘图为高分辨率显示，并纳入" viewScale "。
       // 还可以移动画布(0,0)到屏幕中间。
       // 这只适用于3D透视投影。
-      const drawScale = dpr * viewScale;
+      let drawScale = dpr * viewScale;
       ctx.scale(drawScale, drawScale);
-      ctx.translate(halfW, halfH);
+      ctx.translate(half.w, half.h);
       draw(ctx, width, height, viewScale);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
     });

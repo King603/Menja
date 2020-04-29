@@ -1,9 +1,9 @@
 // 交互
 function handleCanvasPointerDown(x, y) {
-  if (!pointerIsDown) {
-    pointerIsDown = true;
-    pointerScreen.x = x;
-    pointerScreen.y = y;
+  if (!pointer.isDown) {
+    pointer.isDown = true;
+    pointer.screen.x = x;
+    pointer.screen.y = y;
     // 当菜单打开时，向下/向上切换交互模式。
     // 我们只需要重新运行菜单系统，让它做出响应。
     if (isMenuVisible())
@@ -11,8 +11,8 @@ function handleCanvasPointerDown(x, y) {
   }
 }
 function handleCanvasPointerUp() {
-  if (pointerIsDown) {
-    pointerIsDown = false;
+  if (pointer.isDown) {
+    pointer.isDown = false;
     touchPoints.push({
       touchBreak: true,
       life: touchPointLife
@@ -24,9 +24,9 @@ function handleCanvasPointerUp() {
   }
 }
 function handleCanvasPointerMove(x, y) {
-  if (pointerIsDown) {
-    pointerScreen.x = x;
-    pointerScreen.y = y;
+  if (pointer.isDown) {
+    pointer.screen.x = x;
+    pointer.screen.y = y;
   }
 }
 // 使用指针事件如果可用，否则回退到触摸事件(iOS)。
@@ -40,27 +40,27 @@ if ("PointerEvent" in window) {
 else {
   let activeTouchId = null;
   canvas.addEventListener("touchstart", event => {
-    if (!pointerIsDown) {
-      const touch = event.changedTouches[0];
+    if (!pointer.isDown) {
+      let touch = event.changedTouches[0];
       activeTouchId = touch.identifier;
       handleCanvasPointerDown(touch.clientX, touch.clientY);
     }
   });
   canvas.addEventListener("touchend", event => {
-    for (let touch of event.changedTouches) {
+    event.changedTouches.forEach(touch => {
       if (touch.identifier === activeTouchId) {
         handleCanvasPointerUp();
-        break;
+        return;
       }
-    }
+    });
   });
   canvas.addEventListener("touchmove", event => {
-    for (let touch of event.changedTouches) {
+    event.changedTouches.forEach(touch => {
       if (touch.identifier === activeTouchId) {
         handleCanvasPointerMove(touch.clientX, touch.clientY);
         event.preventDefault();
-        break;
+        return;
       }
-    }
+    });
   }, { passive: false });
 }

@@ -64,12 +64,12 @@ let getTarget = (() => {
     let wireframe = false;
     let health = 1;
     let maxHealth = 3;
-    let spinner = state.game.cubeCount >= spinnerThreshold && isInGame() && spinnerSpawner.shouldSpawn();
+    let spinner = state.game.cubeCount >= threshold.spinner && isInGame() && spinnerSpawner.shouldSpawn();
     // 目标参数覆盖
-    if (state.game.cubeCount >= slowmoThreshold && slowmoSpawner.shouldSpawn()) {
+    if (state.game.cubeCount >= threshold.slowmo && slowmoSpawner.shouldSpawn()) {
       color = BLUE;
       wireframe = true;
-    } else if (state.game.cubeCount >= strongThreshold && strongSpawner.shouldSpawn()) {
+    } else if (state.game.cubeCount >= threshold.strong && strongSpawner.shouldSpawn()) {
       color = PINK;
       health = 3;
     }

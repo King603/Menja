@@ -24,12 +24,9 @@ function sparkBurst(x, y, count, maxSpeed) {
 // 这是用来创造目标胶“脱落”的效果。
 let glueShedVertices;
 function glueShedSparks(target) {
-  if (!glueShedVertices) {
-    glueShedVertices = cloneVertices(target.vertices);
-  }
-  else {
-    copyVerticesTo(target.vertices, glueShedVertices);
-  }
+  glueShedVertices
+    ? copyVerticesTo(target.vertices, glueShedVertices)
+    : glueShedVertices = cloneVertices(target.vertices);
   glueShedVertices.forEach(vertice => {
     if (Math.random() < .4) {
       projectVertex(vertice);

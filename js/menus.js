@@ -1,10 +1,4 @@
 // 顶级菜单容器
-const menuContainerNode = $(".menus");
-const menuMainNode = $(".menu--main");
-const menuPauseNode = $(".menu--pause");
-const menuScoreNode = $(".menu--score");
-const finalScoreLblNode = $(".final-score-lbl");
-const highScoreLblNode = $(".high-score-lbl");
 function renderMenus() {
   function showMenu(node) {
     node.classList.add("active");
@@ -12,40 +6,44 @@ function renderMenus() {
   function hideMenu(node) {
     node.classList.remove("active");
   }
+  let menuMainNode = $(".menu--main");
+  let menuPauseNode = $(".menu--pause");
+  let menuScoreNode = $(".menu--score");
   hideMenu(menuMainNode);
   hideMenu(menuPauseNode);
   hideMenu(menuScoreNode);
   switch (state.menus.active) {
-    case MENU_MAIN:
+    case MENU.MAIN:
       showMenu(menuMainNode);
       break;
-    case MENU_PAUSE:
+    case MENU.PAUSE:
       showMenu(menuPauseNode);
       break;
-    case MENU_SCORE:
-      finalScoreLblNode.textContent = formatNumber(state.game.score);
-      highScoreLblNode.textContent = state.game.score > getHighScore()
+    case MENU.SCORE:
+      $(".final-score-lbl").textContent = formatNumber(state.game.score);
+      $(".high-score-lbl").textContent = state.game.score > getHighScore()
         ? "New High Score!"
         : `High Score: ${formatNumber(getHighScore())}`;
       showMenu(menuScoreNode);
       break;
   }
   setHudVisibility(!isMenuVisible());
+  let menuContainerNode = $(".menus");
   menuContainerNode.classList.toggle("has-active", isMenuVisible());
-  menuContainerNode.classList.toggle("interactive-mode", isMenuVisible() && pointerIsDown);
+  menuContainerNode.classList.toggle("interactive-mode", isMenuVisible() && pointer.isDown);
 }
 renderMenus();
 
 // Button Actions
 // 主菜单
-handleClick($(".play-normal-btn"), () => click(GAME_MODE_RANKED));
-handleClick($(".play-casual-btn"), () => click(GAME_MODE_CASUAL));
+handleClick($(".play-normal-btn"), () => click(GAME_MODE.RANKED));
+handleClick($(".play-casual-btn"), () => click(GAME_MODE.CASUAL));
 // 暂停菜单
 handleClick($(".resume-btn"), () => resumeGame());
-handleClick($(".menu-btn--pause"), () => setActiveMenu(MENU_MAIN));
+handleClick($(".menu-btn--pause"), () => setActiveMenu(MENU.MAIN));
 // 分数菜单
 handleClick($(".play-again-btn"), () => click());
-handleClick($(".menu-btn--score"), () => setActiveMenu(MENU_MAIN));
+handleClick($(".menu-btn--score"), () => setActiveMenu(MENU.MAIN));
 function click(GAME_MODE) {
   GAME_MODE && setGameMode(GAME_MODE);
   setActiveMenu(null);

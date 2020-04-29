@@ -39,13 +39,13 @@ function resetGame() {
   spawnTime = getSpawnDelay();
 }
 function pauseGame() {
-  isInGame() && setActiveMenu(MENU_PAUSE);
+  isInGame() && setActiveMenu(MENU.PAUSE);
 }
 function resumeGame() {
   isPaused() && setActiveMenu(null);
 }
 function endGame() {
-  setActiveMenu(MENU_SCORE);
+  setActiveMenu(MENU.SCORE);
   handleCanvasPointerUp();
   // 如果需要更新高分，在渲染分数菜单后。
   state.game.score > getHighScore() &&

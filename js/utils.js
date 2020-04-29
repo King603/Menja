@@ -55,9 +55,9 @@ function pickOne(arr) {
 // 将{r, g, b}颜色对象转换为六位十六进制代码。
 function colorToHex(color) {
   return "#" +
-    (color.r | 0).toString(16).padStart(2, "0") +
-    (color.g | 0).toString(16).padStart(2, "0") +
-    (color.b | 0).toString(16).padStart(2, "0");
+    setColor(color.r | 0) +
+    setColor(color.g | 0) +
+    setColor(color.b | 0);
 }
 // 操作一个{r, g, b}颜色对象。
 // 返回字符串十六进制代码。
@@ -66,23 +66,25 @@ function shadeColor(color, lightness) {
   let other = lightness < .5 ? 0 : 255;
   let mix = Math.abs(lightness * 2 - 1);
   return "#" +
-    (lerp(color.r, other, mix) | 0).toString(16).padStart(2, "0") +
-    (lerp(color.g, other, mix) | 0).toString(16).padStart(2, "0") +
-    (lerp(color.b, other, mix) | 0).toString(16).padStart(2, "0");
+    setColor(lerp(color.r, other, mix) | 0) +
+    setColor(lerp(color.g, other, mix) | 0) +
+    setColor(lerp(color.b, other, mix) | 0);
 }
-
+// 设置颜色
+function setColor(color) {
+  return color.toString(16).padStart(2, "0");
+}
 // Timing Helpers
-const _allCooldowns = [];
+let _allCooldowns = [];
 function makeCooldown(rechargeTime, units = 1) {
   let timeRemaining = 0;
   let lastTime = 0;
-  const initialOptions = { rechargeTime, units };
+  let initialOptions = { rechargeTime, units };
   function updateTime() {
-    const now = state.game.time;
+    let now = state.game.time;
     // 如果时间倒退，重置剩余时间。
-    if (now < lastTime) {
+    if (now < lastTime)
       timeRemaining = 0;
-    }
     else {
       // 更新……
       timeRemaining -= now - lastTime;
@@ -90,13 +92,13 @@ function makeCooldown(rechargeTime, units = 1) {
     }
     lastTime = now;
   }
-  const cooldown = {
+  let cooldown = {
     canUse() {
       updateTime();
       return timeRemaining <= rechargeTime * (units - 1);
     },
     useIfAble() {
-      const usable = this.canUse();
+      let usable = this.canUse();
       if (usable)
         timeRemaining += rechargeTime;
       return usable;
@@ -125,7 +127,7 @@ function resetAllCooldowns() {
   _allCooldowns.forEach(cooldown => cooldown.reset());
 }
 function makeSpawner({ chance, cooldownPerSpawn, maxSpawns }) {
-  const cooldown = makeCooldown(cooldownPerSpawn, maxSpawns);
+  let cooldown = makeCooldown(cooldownPerSpawn, maxSpawns);
   return {
     shouldSpawn() {
       return Math.random() <= chance && cooldown.useIfAble();
@@ -142,12 +144,12 @@ function makeSpawner({ chance, cooldownPerSpawn, maxSpawns }) {
 }
 
 // Vector Helpers
-function normalize(v) {
-  const mag = Math.hypot(v.x, v.y, v.z);
+function normalize({ x, y, z }) {
+  let mag = Math.hypot(x, y, z);
   return {
-    x: v.x / mag,
-    y: v.y / mag,
-    z: v.z / mag
+    x: x / mag,
+    y: y / mag,
+    z: z / mag
   };
 }
 // 里德数学助手
@@ -172,8 +174,8 @@ function cloneVertices(vertices) {
 // 数组的长度必须相同。
 function copyVerticesTo(arr1, arr2) {
   for (let i = 0; i < arr1.length; i++) {
-    const v1 = arr1[i];
-    const v2 = arr2[i];
+    let v1 = arr1[i];
+    let v2 = arr2[i];
     v2.x = v1.x;
     v2.y = v1.y;
     v2.z = v1.z;
@@ -189,8 +191,7 @@ function computeTriMiddle(poly) {
 function computeQuadMiddle(poly) {
   computeMiddle(poly, 4);
 }
-function computeMiddle(poly, n) {
-  const { vertices: v, middle: m } = poly;
+function computeMiddle({ vertices: v, middle: m }, n) {
   for (let i = 0; i < n; i++) {
     m.x = (i == 0 ? 0 : m.x) + v[i].x / n;
     m.y = (i == 0 ? 0 : m.y) + v[i].y / n;
@@ -206,60 +207,60 @@ function computePolyMiddle(poly) {
 // 还会触发中点计算，这会改变" middle "属性的" poly "。
 function computePolyDepth(poly) {
   computePolyMiddle(poly);
-  const mid = poly.middle;
-  poly.depth = Math.hypot(mid.x, mid.y, mid.z - cameraDistance);
+  let { x, y, z } = poly.middle;
+  poly.depth = Math.hypot(x, y, z - cameraDistance);
 }
 // 计算任意多边形的法线。使用标准化向量叉乘。
 // 改变给定" poly "的" normalName "属性。
 function computePolyNormal(poly, normalName) {
   // 存储快速参考顶点
-  const [v1, v2, v3] = poly.vertices;
+  let [v1, v2, v3] = poly.vertices;
   // 按缠绕顺序计算顶点的差值。
-  const a = { x: v1.x - v2.x, y: v1.y - v2.y, z: v1.z - v2.z, };
-  const b = { x: v1.x - v3.x, y: v1.y - v3.y, z: v1.z - v3.z, };
+  let a = { x: v1.x - v2.x, y: v1.y - v2.y, z: v1.z - v2.z };
+  let b = { x: v1.x - v3.x, y: v1.y - v3.y, z: v1.z - v3.z };
   // 叉积
-  const n = { x: a.y * b.z - a.z * b.y, y: a.z * b.x - a.x * b.z, z: a.x * b.y - a.y * b.x, };
+  let { x, y, z } = { x: a.y * b.z - a.z * b.y, y: a.z * b.x - a.x * b.z, z: a.x * b.y - a.y * b.x };
   // 计算法向和正规的模量
-  const mag = Math.hypot(n.x, n.y, n.z);
-  const polyNormal = poly[normalName];
-  polyNormal.x = n.x / mag;
-  polyNormal.y = n.y / mag;
-  polyNormal.z = n.z / mag;
+  let mag = Math.hypot(x, y, z);
+  let polyNormal = poly[normalName];
+  polyNormal.x = x / mag;
+  polyNormal.y = y / mag;
+  polyNormal.z = z / mag;
 }
 // 对所有给定的顶点应用平移/旋转/缩放。
 // 如果" vertices "和" target "是相同的数组，则顶点将在相应位置发生突变。
 // 如果" vertices "和" target "是不同的数组，" vertices "将不被触及，而是将" vertices "转换后的值写入" target "数组。
-function transformVertices(vertices, target, tX, tY, tZ, rX, rY, rZ, sX, sY, sZ) {
+function transformVertices(vertices, target, t, r, s) {
   // 矩阵乘法常数只需要对所有顶点计算一次。
-  const sin = { x: Math.sin(rX), y: Math.sin(rY), z: Math.sin(rZ), };
-  const cos = { x: Math.cos(rX), y: Math.cos(rY), z: Math.cos(rZ), };
+  let sin = { x: Math.sin(r.x), y: Math.sin(r.y), z: Math.sin(r.z) };
+  let cos = { x: Math.cos(r.x), y: Math.cos(r.y), z: Math.cos(r.z) };
   // 使用类似map()的forEach()，但使用(回收的)目标数组。
   vertices.forEach((vertex, index) => {
-    const targetVertex = target[index];
-    const X_axis = { x: vertex.x, y: vertex.z * sin.x + vertex.y * cos.x, z: vertex.z * cos.x - vertex.y * sin.x, };// X轴旋转
-    const Y_axis = { x: X_axis.x * cos.y - X_axis.z * sin.y, y: X_axis.y, z: X_axis.x * sin.y + X_axis.z * cos.y, };// Y轴旋转
-    const Z_axis = { x: Y_axis.x * cos.z - Y_axis.y * sin.z, y: Y_axis.x * sin.z + Y_axis.y * cos.z, z: Y_axis.z, };// Z轴旋转
+    let targetVertex = target[index];
+    let X_axis = { x: vertex.x, y: vertex.z * sin.x + vertex.y * cos.x, z: vertex.z * cos.x - vertex.y * sin.x };// X轴旋转
+    let Y_axis = { x: X_axis.x * cos.y - X_axis.z * sin.y, y: X_axis.y, z: X_axis.x * sin.y + X_axis.z * cos.y };// Y轴旋转
+    let Z_axis = { x: Y_axis.x * cos.z - Y_axis.y * sin.z, y: Y_axis.x * sin.z + Y_axis.y * cos.z, z: Y_axis.z };// Z轴旋转
     // 缩放、平移和设置转换。
-    targetVertex.x = Z_axis.x * sX + tX;
-    targetVertex.y = Z_axis.y * sY + tY;
-    targetVertex.z = Z_axis.z * sZ + tZ;
+    targetVertex.x = Z_axis.x * s.x + t.x;
+    targetVertex.y = Z_axis.y * s.y + t.y;
+    targetVertex.z = Z_axis.z * s.z + t.z;
   });
 }
 // 单个顶点上的三维投影。
 // 直接改变顶点。
 function projectVertex(vertex) {
-  const depth = getDepth(vertex);
+  let depth = getDepth(vertex);
   vertex.x *= depth;
   vertex.y *= depth;
 }
 // 单个顶点上的三维投影。
 // 使次要目标顶点发生突变。
 function projectVertexTo(vertex, target) {
-  const depth = getDepth(vertex);
+  let depth = getDepth(vertex);
   target.x = vertex.x * depth;
   target.y = vertex.y * depth;
 }
 // 获取深度。
-function getDepth(vertex) {
-  return cameraDistance * sceneScale / (cameraDistance - vertex.z);
+function getDepth({ z }) {
+  return cameraDistance * sceneScale / (cameraDistance - z);
 }

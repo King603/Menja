@@ -50,7 +50,7 @@ function makeRecursiveCubeModel({ recursionLevel, splitFn, color, scale = 1 }) {
     // 要计算遮挡(阴影)，找到最大星等的原点分量，并将其相对于“maxComponent”进行归一化。
     let occlusion = Math.max(Math.abs(origin.x), Math.abs(origin.y), Math.abs(origin.z)) / maxComponent;
     // 在较低的迭代中，遮挡看起来更好地减轻了一些。
-    let occlusionLighter = recursionLevel > 2 ? occlusion : (occlusion + 0.8) / 1.8;
+    let occlusionLighter = recursionLevel > 2 ? occlusion : (occlusion + .8) / 1.8;
     // 克隆，翻译顶点到原点，并应用规模
     finalModel.vertices.push(...cubeModel.vertices.map(vertex => ({
       x: (vertex.x + origin.x) * scale,
@@ -95,7 +95,7 @@ function mengerSpongeSplit({ x, y, z }, s) {
 }
 // 通过在一个阈值内合并重复的顶点，并删除共享相同顶点的所有多边形，帮助优化模型。
 // 直接修改模型。
-function optimizeModel(model, threshold = 0.0001) {
+function optimizeModel(model, threshold = .0001) {
   let { vertices, polys } = model;
   function compareVertices(v1, v2) {
     return Math.abs(v1.x - v2.x) < threshold &&
@@ -122,13 +122,7 @@ function optimizeModel(model, threshold = 0.0001) {
       }
     }
   }
-  vertices.forEach((vertice, i) =>
-    polys.forEach(poly =>
-      poly.vIndexes.forEach((vi, j, arr) =>
-        vertice.originalIndexes.includes(vi) && (arr[j] = i)
-      )
-    )
-  );
+  vertices.forEach((vertice, i) => polys.forEach(poly => poly.vIndexes.forEach((vi, j, arr) => vertice.originalIndexes.includes(vi) && (arr[j] = i))));
   polys.forEach(poly => poly.vIndexes.forEach(vIndex => poly.sum = (poly.sum ? poly.sum : 0) + vIndex));
   polys.sort((a, b) => b.sum - a.sum);
   /**

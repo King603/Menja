@@ -9,7 +9,7 @@ class Entity {
       wireframe,
       strokeWidth: wireframe ? 2 : 0,
       strokeColor: colorToHex(color),
-      strokeColorDark: shadeColor(color, 0.4),
+      strokeColorDark: shadeColor(color, .4),
       depth: 0,
       middle: { x: 0, y: 0, z: 0 },
       normalWorld: { x: 0, y: 0, z: 0 },
@@ -47,15 +47,21 @@ class Entity {
     transformVertices(
       this.model.vertices,
       this.vertices,
-      this.x,
-      this.y,
-      this.z,
-      this.rotateX,
-      this.rotateY,
-      this.rotateZ,
-      this.scaleX,
-      this.scaleY,
-      this.scaleZ
+      {
+        x: this.x,
+        y: this.y,
+        z: this.z
+      },
+      {
+        x: this.rotateX,
+        y: this.rotateY,
+        z: this.rotateZ
+      },
+      {
+        x: this.scaleX,
+        y: this.scaleY,
+        z: this.scaleZ
+      }
     );
     copyVerticesTo(this.vertices, this.shadowVertices);
   }

@@ -3,8 +3,8 @@ function setHudVisibility(visible) {
 }
 
 // Score
-const scoreNode = $(".score-lbl");
-const cubeCountNode = $(".cube-count-lbl");
+let scoreNode = $(".score-lbl");
+let cubeCountNode = $(".cube-count-lbl");
 function renderScoreHud() {
   !isCasualGame() && (scoreNode.innerText = `SCORE: ${state.game.score}`);
   scoreNode.style.display = isCasualGame() ? "none" : "block";

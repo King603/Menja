@@ -1,16 +1,20 @@
 // Enums
 // 游戏模式
-const GAME_MODE_RANKED = Symbol("GAME_MODE_RANKED");
-const GAME_MODE_CASUAL = Symbol("GAME_MODE_CASUAL");
+const GAME_MODE = {
+  RANKED: Symbol("GAME_MODE_RANKED"),
+  CASUAL: Symbol("GAME_MODE_CASUAL"),
+};
 // 可用的菜单
-const MENU_MAIN = Symbol("MENU_MAIN");
-const MENU_PAUSE = Symbol("MENU_PAUSE");
-const MENU_SCORE = Symbol("MENU_SCORE");
+const MENU = {
+  MAIN: Symbol("MENU_MAIN"),
+  PAUSE: Symbol("MENU_PAUSE"),
+  SCORE: Symbol("MENU_SCORE"),
+};
 
 // Global State
-const state = {
+let state = {
   game: {
-    mode: GAME_MODE_RANKED,
+    mode: GAME_MODE.RANKED,
     // 当前游戏的运行时间。
     time: 0,
     // 玩家得分。
@@ -20,7 +24,7 @@ const state = {
   },
   menus: {
     // 设置为“null”以隐藏所有菜单
-    active: MENU_MAIN
+    active: MENU.MAIN
   }
 };
 
@@ -32,16 +36,16 @@ function isMenuVisible() {
   return !!state.menus.active;
 }
 function isCasualGame() {
-  return state.game.mode === GAME_MODE_CASUAL;
+  return state.game.mode === GAME_MODE.CASUAL;
 }
 function isPaused() {
-  return state.menus.active === MENU_PAUSE;
+  return state.menus.active === MENU.PAUSE;
 }
 
 // Local Storage
-const highScoreKey = "__menja__highScore";
+let highScoreKey = "__menja__highScore";
 function getHighScore() {
-  const raw = localStorage.getItem(highScoreKey);
+  let raw = localStorage.getItem(highScoreKey);
   return raw ? parseInt(raw, 10) : 0;
 }
 function setHighScore(score) {
